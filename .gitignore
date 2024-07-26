@@ -1,0 +1,8 @@
+*.xml
+*.jpg
+*.pth
+*.pyc
+/dataset
+/pre_train_pth
+/result
+/Output
