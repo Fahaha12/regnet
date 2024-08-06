@@ -64,7 +64,7 @@ class MultiModalDataset(Dataset):
         match = re.search(r'\d+', survival_days_str)
         target = float(match.group()) if match else 0.0  # 若未找到数字，则默认值为 0.0
 
-        # 可选地转换为 PyTorch 张量
+        # 转换为 PyTorch 张量
         phenotypes = torch.tensor(phenotypes, dtype=torch.float32)
         target = torch.tensor(target, dtype=torch.float32)
 

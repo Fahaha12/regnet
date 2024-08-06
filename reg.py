@@ -9,9 +9,10 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from utils.dataset import MultiModalDataset  # 自定义的数据集类
+from model.MultiScaleSwinTransformerForRegression import MultiScaleSwinTransformerForRegression
 from model.SwinTransformerForRegression import SwinTransformerForRegression
 import matplotlib.pyplot as plt
-from utils.classification_data import MultiModalDataset
+from utils.dataset import MultiModalDataset
 import os
 import re
 from sklearn.metrics import r2_score, mean_absolute_error
@@ -22,7 +23,7 @@ from torch.utils.tensorboard import SummaryWriter
 def main():
     # 解析参数
     parser = argparse.ArgumentParser(description='MultiViewBreastCancerDetection')
-    parser.add_argument('--data-path', default='BraTS', type=str, help='data path')
+    parser.add_argument('--data-path', default='./dataset/BraTS', type=str, help='data path')
     parser.add_argument('--out-path', default='result', help='directory to output the result')
     parser.add_argument('--txt-path', default='Output', help='directory to output the result')
     parser.add_argument('--gpu-id', default=0, type=int, help='visible gpu id(s)')
@@ -40,8 +41,8 @@ def main():
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
     parser.add_argument('--input-width', default=224, type=int, help='the width of input images')
     parser.add_argument('--input-height', default=224, type=int, help='the height of input images')
-    parser.add_argument('--model_type', default='swin_transformer_reg', type=str, help='the type of model used',
-                        choices=['swin_transformer', 'phenotypic', 'multi_modal', 'multi_modal_semi', 'multi_modal_image_main'])
+    parser.add_argument('--model_type', default='msstr', type=str, help='the type of model used',
+                        choices=['swin_transformer', 'msstr'])
     parser.add_argument('--cosine_lr', default=True, type=bool, help='whether use cosine scheduler')
     parser.add_argument('--save-path', default='model_checkpoint.pth', type=str, help='path to save the model checkpoint')
     parser.add_argument('--log-path', default='training.log', type=str, help='path to save the training log')
@@ -69,16 +70,41 @@ def main():
     input_shape = (args.input_height, args.input_width)
 
     # 初始化模型和优化器
-    student_model = SwinTransformerForRegression(pretrain_path='pre_train_pth/swin_tiny_patch4_window7_224.pth')
-    student_model = student_model.to(device)
-    optimizer = optim.AdamW(student_model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    if args.model_type == 'msstr':
+        multi_scale_swin_model = MultiScaleSwinTransformerForRegression(
+            img_size=args.input_width,  # 假设宽高相等
+            patch_size=4,
+            in_chans=3,
+            embed_dim=96,
+            depths=[2, 2, 6, 2],
+            num_heads=[3, 6, 12, 24],
+            window_size=7,
+            num_phenotypic_features=8  # 根据实际情况调整这个值
+        )
+    elif args.model_type == 'swin_transformer_reg':
+        multi_scale_swin_model = SwinTransformerForRegression(
+            img_size=args.input_width,
+            patch_size=4,
+            in_chans=3,
+            embed_dim=96,
+            depths=[2, 2, 6, 2],
+            num_heads=[3, 6, 12, 24],
+            window_size=7,
+            num_phenotypic_features=8
+        )
+    else:
+        raise ValueError(f"Unknown model type: {args.model_type}")
+
+    # 将模型移动到指定设备
+    multi_scale_swin_model = multi_scale_swin_model.to(device)    
+    optimizer = optim.AdamW(multi_scale_swin_model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     loss_function = nn.MSELoss()  # 确保在使用之前定义损失函数
 
     # 查找最新的检查点文件
     latest_checkpoint_path = find_latest_checkpoint(args.out_path)
     if latest_checkpoint_path:
         # 加载最新的模型和优化器状态
-        start_epoch = load_checkpoint(student_model, optimizer, latest_checkpoint_path)
+        start_epoch = load_checkpoint(multi_scale_swin_model, optimizer, latest_checkpoint_path)
         logger.info(f'Loaded checkpoint from epoch {start_epoch}')
     else:
         start_epoch = 0  # 如果没有找到权重文件，从头开始训练
@@ -153,7 +179,7 @@ def main():
         writer = SummaryWriter(log_dir=args.out_path + '/tensorboard_logs') # 初始化 SummaryWriter
 
         for epoch in range(start_epoch, args.epochs):
-            student_model.train()
+            multi_scale_swin_model.train()
             pbar_train = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{args.epochs} - Training", leave=False)
             
             epoch_train_loss = 0
@@ -161,7 +187,7 @@ def main():
                 image, phenotypes, target = image.to(device), phenotypes.to(device), target.to(device)
                 
                 optimizer.zero_grad()
-                output = student_model(image, phenotypes)
+                output = multi_scale_swin_model(image, phenotypes)
                 
                 output = output.squeeze()
                 target = target.squeeze()
@@ -183,7 +209,7 @@ def main():
             logger.info(f'Epoch [{epoch+1}/{args.epochs}] - Current Learning Rate: {current_lr:.6f}')
 
 
-            student_model.eval()
+            multi_scale_swin_model.eval()
             total_val_loss = 0
             pbar_val = tqdm(val_dataloader, desc=f"Epoch {epoch+1}/{args.epochs} - Validation", leave=False)
             all_targets = []
@@ -192,7 +218,7 @@ def main():
             with torch.no_grad():
                 for image, phenotypes, target in pbar_val:
                     image, phenotypes, target = image.to(device), phenotypes.to(device), target.to(device)
-                    output = student_model(image, phenotypes)
+                    output = multi_scale_swin_model(image, phenotypes)
                     
                     output = output.squeeze()
                     target = target.squeeze()
@@ -230,14 +256,14 @@ def main():
             # 保存最新权重和当前epoch
             if (epoch + 1) % 50 == 0:
                 latest_model_save_path = os.path.join(args.out_path, f'latest_model_checkpoint_epoch_{epoch+1}.pth')
-                save_checkpoint(student_model, optimizer, epoch + 1, latest_model_save_path)
+                save_checkpoint(multi_scale_swin_model, optimizer, epoch + 1, latest_model_save_path)
                 logger.info(f'Latest model checkpoint saved at {latest_model_save_path}')
 
             # 保存最佳权重和当前epoch
             if avg_val_loss < best_val_loss:
                 best_val_loss = avg_val_loss
                 best_model_save_path = os.path.join(args.out_path, 'best_model_checkpoint.pth')
-                save_checkpoint(student_model, optimizer, epoch + 1, best_model_save_path)
+                save_checkpoint(multi_scale_swin_model, optimizer, epoch + 1, best_model_save_path)
                 logger.info(f'Best model checkpoint saved at {best_model_save_path}')
 
         # 绘制损失图和指标图
