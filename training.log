@@ -7950,3 +7950,145 @@
 08/06/2024 09:58:52 - INFO - root -   Epoch [1/1000] - Training MSE: 218557.1722 - Validation MSE: 177002.2437
 08/06/2024 09:58:52 - INFO - root -   Epoch [1/1000] - R² Score: -0.2716 - MAE: 286.7083
 08/06/2024 09:58:53 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/06/2024 15:25:05 - INFO - root -   Hyperparameters:
+08/06/2024 15:25:05 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:25:05 - INFO - root -   out_path: result
+08/06/2024 15:25:05 - INFO - root -   txt_path: Output
+08/06/2024 15:25:05 - INFO - root -   gpu_id: 0
+08/06/2024 15:25:05 - INFO - root -   num_workers: 10
+08/06/2024 15:25:05 - INFO - root -   epochs: 1000
+08/06/2024 15:25:05 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:25:05 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:25:05 - INFO - root -   consistency: False
+08/06/2024 15:25:05 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:25:05 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:25:05 - INFO - root -   batch_size: 128
+08/06/2024 15:25:05 - INFO - root -   lr: 0.0001
+08/06/2024 15:25:05 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:25:05 - INFO - root -   nesterov: True
+08/06/2024 15:25:05 - INFO - root -   momentum: 0.9
+08/06/2024 15:25:05 - INFO - root -   input_width: 224
+08/06/2024 15:25:05 - INFO - root -   input_height: 224
+08/06/2024 15:25:05 - INFO - root -   model_type: msstr
+08/06/2024 15:25:05 - INFO - root -   cosine_lr: True
+08/06/2024 15:25:05 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:25:05 - INFO - root -   log_path: training.log
+08/06/2024 15:25:42 - INFO - root -   Hyperparameters:
+08/06/2024 15:25:42 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:25:42 - INFO - root -   out_path: result
+08/06/2024 15:25:42 - INFO - root -   txt_path: Output
+08/06/2024 15:25:42 - INFO - root -   gpu_id: 0
+08/06/2024 15:25:42 - INFO - root -   num_workers: 10
+08/06/2024 15:25:42 - INFO - root -   epochs: 1000
+08/06/2024 15:25:42 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:25:42 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:25:42 - INFO - root -   consistency: False
+08/06/2024 15:25:42 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:25:42 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:25:42 - INFO - root -   batch_size: 64
+08/06/2024 15:25:42 - INFO - root -   lr: 0.0001
+08/06/2024 15:25:42 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:25:42 - INFO - root -   nesterov: True
+08/06/2024 15:25:42 - INFO - root -   momentum: 0.9
+08/06/2024 15:25:42 - INFO - root -   input_width: 224
+08/06/2024 15:25:42 - INFO - root -   input_height: 224
+08/06/2024 15:25:42 - INFO - root -   model_type: msstr
+08/06/2024 15:25:42 - INFO - root -   cosine_lr: True
+08/06/2024 15:25:42 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:25:42 - INFO - root -   log_path: training.log
+08/06/2024 15:26:48 - INFO - root -   Hyperparameters:
+08/06/2024 15:26:48 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:26:48 - INFO - root -   out_path: result
+08/06/2024 15:26:48 - INFO - root -   txt_path: Output
+08/06/2024 15:26:48 - INFO - root -   gpu_id: 0
+08/06/2024 15:26:48 - INFO - root -   num_workers: 10
+08/06/2024 15:26:48 - INFO - root -   epochs: 1000
+08/06/2024 15:26:48 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:26:48 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:26:48 - INFO - root -   consistency: False
+08/06/2024 15:26:48 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:26:48 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:26:48 - INFO - root -   batch_size: 64
+08/06/2024 15:26:48 - INFO - root -   lr: 0.0001
+08/06/2024 15:26:48 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:26:48 - INFO - root -   nesterov: True
+08/06/2024 15:26:48 - INFO - root -   momentum: 0.9
+08/06/2024 15:26:48 - INFO - root -   input_width: 224
+08/06/2024 15:26:48 - INFO - root -   input_height: 224
+08/06/2024 15:26:48 - INFO - root -   model_type: msstr
+08/06/2024 15:26:48 - INFO - root -   cosine_lr: True
+08/06/2024 15:26:48 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:26:48 - INFO - root -   log_path: training.log
+08/06/2024 15:27:12 - INFO - root -   Hyperparameters:
+08/06/2024 15:27:12 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:27:12 - INFO - root -   out_path: result
+08/06/2024 15:27:12 - INFO - root -   txt_path: Output
+08/06/2024 15:27:12 - INFO - root -   gpu_id: 0
+08/06/2024 15:27:12 - INFO - root -   num_workers: 10
+08/06/2024 15:27:12 - INFO - root -   epochs: 1000
+08/06/2024 15:27:12 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:27:12 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:27:12 - INFO - root -   consistency: False
+08/06/2024 15:27:12 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:27:12 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:27:12 - INFO - root -   batch_size: 64
+08/06/2024 15:27:12 - INFO - root -   lr: 0.0001
+08/06/2024 15:27:12 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:27:12 - INFO - root -   nesterov: True
+08/06/2024 15:27:12 - INFO - root -   momentum: 0.9
+08/06/2024 15:27:12 - INFO - root -   input_width: 224
+08/06/2024 15:27:12 - INFO - root -   input_height: 224
+08/06/2024 15:27:12 - INFO - root -   model_type: msstr
+08/06/2024 15:27:12 - INFO - root -   cosine_lr: True
+08/06/2024 15:27:12 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:27:12 - INFO - root -   log_path: training.log
+08/06/2024 15:27:41 - INFO - root -   Hyperparameters:
+08/06/2024 15:27:41 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:27:41 - INFO - root -   out_path: result
+08/06/2024 15:27:41 - INFO - root -   txt_path: Output
+08/06/2024 15:27:41 - INFO - root -   gpu_id: 0
+08/06/2024 15:27:41 - INFO - root -   num_workers: 10
+08/06/2024 15:27:41 - INFO - root -   epochs: 1000
+08/06/2024 15:27:41 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:27:41 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:27:41 - INFO - root -   consistency: False
+08/06/2024 15:27:41 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:27:41 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:27:41 - INFO - root -   batch_size: 64
+08/06/2024 15:27:41 - INFO - root -   lr: 0.0001
+08/06/2024 15:27:41 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:27:41 - INFO - root -   nesterov: True
+08/06/2024 15:27:41 - INFO - root -   momentum: 0.9
+08/06/2024 15:27:41 - INFO - root -   input_width: 224
+08/06/2024 15:27:41 - INFO - root -   input_height: 224
+08/06/2024 15:27:41 - INFO - root -   model_type: msstr
+08/06/2024 15:27:41 - INFO - root -   cosine_lr: True
+08/06/2024 15:27:41 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:27:41 - INFO - root -   log_path: training.log
+08/06/2024 15:40:31 - INFO - root -   Epoch [1/1000] - Current Learning Rate: 0.000100
+08/06/2024 15:41:59 - INFO - root -   Epoch [1/1000] - Training MSE: 167147.8669 - Validation MSE: 162109.5070
+08/06/2024 15:41:59 - INFO - root -   Epoch [1/1000] - R² Score: -0.0006 - MAE: 299.8047
+08/06/2024 15:42:00 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/06/2024 15:50:17 - INFO - root -   Hyperparameters:
+08/06/2024 15:50:17 - INFO - root -   data_path: ./dataset/BraTS
+08/06/2024 15:50:17 - INFO - root -   out_path: result
+08/06/2024 15:50:17 - INFO - root -   txt_path: Output
+08/06/2024 15:50:17 - INFO - root -   gpu_id: 0
+08/06/2024 15:50:17 - INFO - root -   num_workers: 10
+08/06/2024 15:50:17 - INFO - root -   epochs: 1000
+08/06/2024 15:50:17 - INFO - root -   labeled_ratio: 0.1
+08/06/2024 15:50:17 - INFO - root -   ema_decay: 0.999
+08/06/2024 15:50:17 - INFO - root -   consistency: False
+08/06/2024 15:50:17 - INFO - root -   consistency_rampup: 30
+08/06/2024 15:50:17 - INFO - root -   warm_up_epochs: 10
+08/06/2024 15:50:17 - INFO - root -   batch_size: 64
+08/06/2024 15:50:17 - INFO - root -   lr: 0.0001
+08/06/2024 15:50:17 - INFO - root -   weight_decay: 0.0005
+08/06/2024 15:50:17 - INFO - root -   nesterov: True
+08/06/2024 15:50:17 - INFO - root -   momentum: 0.9
+08/06/2024 15:50:17 - INFO - root -   input_width: 224
+08/06/2024 15:50:17 - INFO - root -   input_height: 224
+08/06/2024 15:50:17 - INFO - root -   model_type: msstr
+08/06/2024 15:50:17 - INFO - root -   cosine_lr: True
+08/06/2024 15:50:17 - INFO - root -   save_path: model_checkpoint.pth
+08/06/2024 15:50:17 - INFO - root -   log_path: training.log

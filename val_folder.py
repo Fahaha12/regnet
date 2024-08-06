@@ -1,14 +1,14 @@
-# python val_folder.py --image-dir /path/to/your/data --model-path ./result/best_model_checkpoint.pth --output-csv predictions.csv
 import argparse
 import torch
 from model.SwinTransformerForRegression import SwinTransformerForRegression
+from model.MultiScaleSwinTransformerForRegression import MultiScaleSwinTransformerForRegression
 from torchvision import transforms
 from PIL import Image
 import os
 import xml.etree.ElementTree as ET
 import csv
 
-def predict_and_save(image_dir, model_path, output_csv):
+def predict_and_save(image_dir, model_path, output_csv, model_type):
     """
     预测指定目录下所有图像，并将结果保存到 CSV 文件。
 
@@ -16,10 +16,16 @@ def predict_and_save(image_dir, model_path, output_csv):
         image_dir (str): 包含图像的目录路径。
         model_path (str): 模型文件路径。
         output_csv (str): 输出 CSV 文件路径。
+        model_type (str): 模型类型，可选值为 'swin_transformer' 或 'msstr'。
     """
-
     # 加载训练好的模型
-    model = SwinTransformerForRegression()
+    if model_type == 'swin_transformer':
+        model = SwinTransformerForRegression()
+    elif model_type == 'msstr':
+        model = MultiScaleSwinTransformerForRegression()
+    else:
+        raise ValueError("Unsupported model type. Choose 'swin_transformer' or 'msstr'.")
+
     checkpoint = torch.load(model_path)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
@@ -76,13 +82,11 @@ def predict_and_save(image_dir, model_path, output_csv):
                             tag_value = float(tag_value)
                         characteristics.append(tag_value)
 
-
                     # 假设 characteristics 现在包含 8 个值
                     phenotype = torch.tensor([characteristics], dtype=torch.float32)
 
                     # 进行预测
                     with torch.no_grad():
-
                         image = image.to(device)  # 将 image 移动到 GPU
                         phenotype = phenotype.to(device)  # 将 phenotype 也移动到 GPU
                         output = model(image, phenotype)
@@ -97,14 +101,16 @@ def predict_and_save(image_dir, model_path, output_csv):
 
 def main():
     parser = argparse.ArgumentParser(description='Validate the trained model')
-    parser.add_argument('--image-dir', type=str, required=True,
+    parser.add_argument('--image-dir', type=str, required=True, default='./dataset/BraTS2019_val',
                         help='path to the directory containing all the folders with input images')
-    parser.add_argument('--model-path', type=str, required=True, help='path to the trained model checkpoint')
-    parser.add_argument('--output-csv', type=str, default='predictions.csv',
+    parser.add_argument('--model-path', type=str, required=True, default='./result/latest_model_checkpoint_epoch_500.pth', help='path to the trained model checkpoint')
+    parser.add_argument('--output-csv', type=str, default='./result/predictions.csv',
                         help='path to the output CSV file')
+    parser.add_argument('--model-type', type=str, default='msstr', choices=['swin_transformer', 'msstr'],
+                        help='the type of model used')
     args = parser.parse_args()
 
-    predict_and_save(args.image_dir, args.model_path, args.output_csv)
+    predict_and_save(args.image_dir, args.model_path, args.output_csv, args.model_type)
 
 if __name__ == '__main__':
     main()

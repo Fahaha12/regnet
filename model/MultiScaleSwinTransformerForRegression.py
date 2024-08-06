@@ -20,7 +20,7 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
 
         # 多尺度嵌入
         self.patch_embed1 = PatchEmbed(
-            img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=96,
+            img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim,
             norm_layer=norm_layer if patch_norm else None)
         self.patch_embed2 = PatchEmbed(
             img_size=img_size, patch_size=patch_size * 2, in_chans=in_chans, embed_dim=embed_dim * 2,
@@ -53,27 +53,29 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
             )
             self.layers.append(layer)
 
+        # 更新 final_dims 和 norms
         self.final_dims = [
-            self.patch_embed1.embed_dim,
-            self.patch_embed2.embed_dim,
-            self.patch_embed3.embed_dim,
-            self.layers[-1].dim
+            embed_dim,
+            embed_dim * 2,
+            embed_dim * 4,
+            int(embed_dim * 2 ** (self.num_layers - 1))
         ]
-        self.norms = nn.ModuleList([
-            norm_layer(self.patch_embed1.embed_dim),
-            norm_layer(self.patch_embed2.embed_dim),
-            norm_layer(self.patch_embed3.embed_dim),
-            norm_layer(self.layers[-1].dim)
-        ])
-        # print(f"self.norms dimensions: {[norm.normalized_shape for norm in self.norms]}")
 
+        # 创建多个 LayerNorm 层
+        max_dim = max(embed_dim, embed_dim*2, embed_dim*4, self.num_features)
+        self.norms = nn.ModuleList([
+            norm_layer(embed_dim),
+            norm_layer(embed_dim*2),
+            norm_layer(embed_dim*4),
+            norm_layer(self.num_features)
+        ])
         self.pos_drop = nn.Dropout(p=drop_rate)
 
         self.norm = norm_layer(self.num_features)
         self.avgpool = nn.AdaptiveAvgPool1d(1)
 
         # 计算总特征维度
-        total_features = sum(self.final_dims[1:])  # 去掉第一个维度 96
+        total_features = sum(self.final_dims[1:])  # 去掉第一个维度
         self.multi_scale_fc = nn.Linear(total_features, 512)
 
         # 结合图像特征和表型特征
@@ -99,26 +101,23 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
             self.patch_embed3(x)
         ]
 
-        # 经过各层的Swin Transformer
+        # 经过各层的 Swin Transformer
         for i, layer in enumerate(self.layers):
             if i < len(features):
                 features[i] = layer(features[i])
             else:
                 features[-1] = layer(features[-1])
 
-        # 归一化
+        # 应用适当的 LayerNorm
         normalized_features = []
-        for i in range(min(len(features), len(self.norms))):
-            B, L, C = features[i].shape
-            # print(f"Before norm: features[{i}].shape = {features[i].shape}")
-            
-            # 确保norm层的维度与特征维度匹配
-            if self.norms[i].normalized_shape[0] != C:
-                self.norms[i] = nn.LayerNorm(C).to(features[i].device)
-            
-            normalized = self.norms[i](features[i])
+        for i, feat in enumerate(features):
+            # 选择合适的 LayerNorm
+            norm = self.norms[min(i, len(self.norms)-1)]
+            # 如果特征的最后一个维度与 LayerNorm 的维度不匹配，进行调整
+            if feat.size(-1) != norm.normalized_shape[0]:
+                norm = nn.LayerNorm(feat.size(-1)).to(feat.device)
+            normalized = norm(feat)
             normalized_features.append(normalized)
-            # print(f"After norm: normalized_features[{i}].shape = {normalized.shape}")
 
         # 池化
         pooled_features = []
@@ -134,32 +133,27 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
 
     def forward(self, x, phenotypes):
         combined_features = self.forward_features(x)
-        # print(f"Combined features shape: {combined_features.shape}")
-        
-        # 确保全连接层的输入维度与权重矩阵的维度匹配
-        if combined_features.shape[1] != self.multi_scale_fc.in_features:
-            self.multi_scale_fc = nn.Linear(combined_features.shape[1], self.multi_scale_fc.out_features).to(combined_features.device)
-        
+
         x = self.multi_scale_fc(combined_features)
-        
+
         # 结合图像特征和表型特征
         combined = torch.cat((x, phenotypes), dim=1)
         x = self.fc1(combined)
         x = self.fc2(x)
-        
+
         return x
 
     def flops(self):
         # 计算模型各部分的浮点运算次数
         flops = 0
-        # Patch Embedding的FLOPs
+        # Patch Embedding 的 FLOPs
         flops += self.patch_embed1.flops()
         flops += self.patch_embed2.flops()
         flops += self.patch_embed3.flops()
-        # 每一层的FLOPs
+        # 每一层的 FLOPs
         for layer in self.layers:
             flops += layer.flops()
-        # 全连接层的FLOPs
+        # 全连接层的 FLOPs
         flops += self.num_features * 3 * self.patches_resolution[0] * self.patches_resolution[1] // (2 ** self.num_layers)
         flops += self.num_features
         return flops

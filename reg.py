@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--consistency', action='store_true', help='use consistency loss')
     parser.add_argument('--consistency-rampup', default=30, type=int, metavar='EPOCHS', help='length of the consistency loss ramp-up')
     parser.add_argument('--warm_up_epochs', default=10, type=int, help='number of warm up epochs')
-    parser.add_argument('--batch-size', default=128, type=int, help='train batch_size')
+    parser.add_argument('--batch-size', default=64, type=int, help='train batch_size')
     parser.add_argument('--lr', '--learning-rate', default=0.0001, type=float, help='initial learning rate')
     parser.add_argument('--weight-decay', default=5e-4, type=float, help='weight decay')
     parser.add_argument('--nesterov', action='store_true', default=True, help='use nesterov momentum')
@@ -46,6 +46,7 @@ def main():
     parser.add_argument('--cosine_lr', default=True, type=bool, help='whether use cosine scheduler')
     parser.add_argument('--save-path', default='model_checkpoint.pth', type=str, help='path to save the model checkpoint')
     parser.add_argument('--log-path', default='training.log', type=str, help='path to save the training log')
+    parser.add_argument('--train-runs', default=1, type=int, help='number of training runs')
     args = parser.parse_args()
 
     # 设置日志格式
@@ -72,7 +73,7 @@ def main():
     # 初始化模型和优化器
     if args.model_type == 'msstr':
         multi_scale_swin_model = MultiScaleSwinTransformerForRegression(
-            img_size=args.input_width,  # 假设宽高相等
+            img_size=args.input_width, 
             patch_size=4,
             in_chans=3,
             embed_dim=96,

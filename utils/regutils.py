@@ -4,6 +4,7 @@ import os
 from sklearn.metrics import r2_score, mean_absolute_error
 import re
 
+
 def calculate_metrics(y_true, y_pred):
     """计算 R² 分数和均方误差 (MAE)"""
     # 确保输入是 PyTorch 张量
@@ -11,13 +12,14 @@ def calculate_metrics(y_true, y_pred):
         y_true = y_true.cpu().numpy()  # 转换为 NumPy 数组
     if isinstance(y_pred, torch.Tensor):
         y_pred = y_pred.cpu().numpy()  # 转换为 NumPy 数组
-    
+
     r2 = r2_score(y_true, y_pred)  # 计算 R² 分数
     mae = mean_absolute_error(y_true, y_pred)  # 计算 MAE
     return r2, mae
-    
+
+
 def plot_loss(train_losses, val_losses, r2_scores, mae_scores, out_path, epoch):
-    """ 绘制训练和验证损失图以及 R² 分数和 MAE """
+    """绘制训练和验证损失图以及 R² 分数和 MAE"""
     plt.figure(figsize=(12, 8))
 
     # 绘制训练和验证损失
@@ -55,20 +57,27 @@ def plot_loss(train_losses, val_losses, r2_scores, mae_scores, out_path, epoch):
 
 
 def save_checkpoint(model, optimizer, epoch, path):
+    """保存检查点"""
     torch.save({
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
     }, path)
+    print(f"Checkpoint saved at {path}")
+
 
 def load_checkpoint(model, optimizer, path):
+    """加载检查点"""
     checkpoint = torch.load(path)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
-    return epoch    
+    print(f"Checkpoint loaded from {path} at epoch {epoch}")
+    return epoch
+
 
 def find_latest_checkpoint(out_path):
+    """查找最新的检查点文件"""
     # 获取所有符合模式的检查点文件
     checkpoint_files = [f for f in os.listdir(out_path) if re.match(r'latest_model_checkpoint_epoch_\d+\.pth', f)]
     if not checkpoint_files:
@@ -86,4 +95,4 @@ def find_latest_checkpoint(out_path):
                 latest_epoch = epoch
                 latest_checkpoint = file
 
-    return os.path.join(out_path, latest_checkpoint) if latest_checkpoint else None    
+    return os.path.join(out_path, latest_checkpoint) if latest_checkpoint else None
