@@ -6,3 +6,5 @@
 /pre_train_pth
 /result
 /Output
+*.zip
+*.csv
