@@ -1,7 +1,7 @@
 import argparse
 import torch
 from model.SwinTransformerForRegression import SwinTransformerForRegression
-from model.MultiScaleSwinTransformerForRegression import MultiScaleSwinTransformerForRegression
+from model.MultiScaleSwinTransformerForRegression2 import MultiScaleSwinTransformerForRegression
 from torchvision import transforms
 from PIL import Image
 import os

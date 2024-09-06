@@ -8457,3 +8457,22 @@
 08/07/2024 15:59:21 - INFO - root -   log_path: training.log
 08/07/2024 15:59:21 - INFO - root -   train_runs: 1
 08/07/2024 15:59:22 - INFO - root -   Loaded checkpoint from epoch 1
+08/07/2024 16:15:58 - INFO - root -   Epoch [2/1000] - Current Learning Rate: 0.000100
+08/07/2024 16:17:34 - INFO - root -   Epoch [2/1000] - Training MSE: 100027.6991 - Validation MSE: 92762.6332
+08/07/2024 16:17:34 - INFO - root -   Epoch [2/1000] - R² Score: 0.2641 - MAE: 204.6164
+08/07/2024 16:17:35 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/07/2024 16:32:54 - INFO - root -   Epoch [3/1000] - Current Learning Rate: 0.000100
+08/07/2024 16:34:35 - INFO - root -   Epoch [3/1000] - Training MSE: 99184.9960 - Validation MSE: 92759.0941
+08/07/2024 16:34:35 - INFO - root -   Epoch [3/1000] - R² Score: 0.2639 - MAE: 213.2988
+08/07/2024 16:34:36 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/07/2024 16:49:14 - INFO - root -   Epoch [4/1000] - Current Learning Rate: 0.000100
+08/07/2024 16:50:41 - INFO - root -   Epoch [4/1000] - Training MSE: 100240.9690 - Validation MSE: 92047.5824
+08/07/2024 16:50:41 - INFO - root -   Epoch [4/1000] - R² Score: 0.2694 - MAE: 202.7151
+08/07/2024 16:50:42 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/07/2024 17:06:08 - INFO - root -   Epoch [5/1000] - Current Learning Rate: 0.000100
+08/07/2024 17:07:42 - INFO - root -   Epoch [5/1000] - Training MSE: 98665.9461 - Validation MSE: 91521.3930
+08/07/2024 17:07:42 - INFO - root -   Epoch [5/1000] - R² Score: 0.2730 - MAE: 198.4424
+08/07/2024 17:07:42 - INFO - root -   Best model checkpoint saved at result\best_model_checkpoint.pth
+08/07/2024 17:22:50 - INFO - root -   Epoch [6/1000] - Current Learning Rate: 0.000100
+08/07/2024 17:24:23 - INFO - root -   Epoch [6/1000] - Training MSE: 99426.4135 - Validation MSE: 91870.6367
+08/07/2024 17:24:23 - INFO - root -   Epoch [6/1000] - R² Score: 0.2696 - MAE: 193.2465
