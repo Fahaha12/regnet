@@ -19,7 +19,7 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
         self.mlp_ratio = mlp_ratio
 
         # 表型特征的嵌入层
-        self.phenotype_embed = nn.Linear(num_phenotypic_features, embed_dim)
+        self.phenotype_embed = nn.Linear(num_phenotypic_features, 512)  # 调整输出维度为 512
 
         # 多尺度嵌入
         self.patch_embed1 = PatchEmbed(
@@ -81,7 +81,7 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
         self.multi_scale_fc = nn.Linear(total_features, 512)
 
         # 结合图像特征和表型特征
-        self.fc1 = nn.Linear(512 + embed_dim, 512)  # 修改这里，使用 embed_dim
+        self.fc1 = nn.Linear(512, 512)
         self.fc2 = nn.Linear(512, 1)
 
         self.apply(self._init_weights)
@@ -132,10 +132,6 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
         # 多尺度特征融合
         combined_features = torch.cat(pooled_features, dim=1)
         
-        # 增加跳跃连接，将表型信息嵌入后与融合后的特征相加
-        phenotype_embedded = self.phenotype_embed(phenotypes)
-        combined_features = combined_features + phenotype_embedded
-
         return combined_features
 
     def forward(self, x, phenotypes):
@@ -145,7 +141,7 @@ class MultiScaleSwinTransformerForRegression(nn.Module):
 
         # 结合图像特征和表型特征
         phenotype_embedded = self.phenotype_embed(phenotypes)
-        combined = torch.cat((x, phenotype_embedded), dim=1)
+        combined = x + phenotype_embedded  # 使用残差连接
         x = self.fc1(combined)
         x = self.fc2(x)
 

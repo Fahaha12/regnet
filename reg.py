@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from utils.dataset import MultiModalDataset  # 自定义的数据集类
-from model.MultiScaleSwinTransformerForRegression2 import MultiScaleSwinTransformerForRegression
+from model.MultiScaleSwinTransformerForRegression2skip import MultiScaleSwinTransformerForRegression
 from model.SwinTransformerForRegression import SwinTransformerForRegression
 import matplotlib.pyplot as plt
 from utils.dataset import MultiModalDataset
